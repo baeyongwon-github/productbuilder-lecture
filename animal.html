@@ -114,19 +114,31 @@
             overflow: hidden;
         }
 
-        .upload-area:hover {
+        .upload-area:hover, .upload-area.dragover {
             background: rgba(255, 255, 255, 0.05);
             border-color: #60a5fa;
+            transform: scale(1.02);
+        }
+
+        .upload-area.dragover {
+            border-style: solid;
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
         }
 
         .upload-icon {
             font-size: 3rem;
             margin-bottom: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .upload-area:hover .upload-icon {
+            transform: translateY(-5px);
         }
 
         .upload-text {
             color: #94a3b8;
             font-size: 0.9rem;
+            padding: 0 20px;
         }
 
         #image-preview {
@@ -139,26 +151,6 @@
 
         #file-input {
             display: none;
-        }
-
-        .start-btn {
-            background: linear-gradient(to right, #3b82f6, #8b5cf6);
-            color: white;
-            border: none;
-            padding: 1rem 2.5rem;
-            font-size: 1.2rem;
-            font-weight: 700;
-            border-radius: 9999px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4);
-            margin-bottom: 2rem;
-            flex-shrink: 0;
-        }
-
-        .start-btn:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.5);
         }
 
         #label-container {
@@ -207,7 +199,7 @@
             height: 100%;
             background: linear-gradient(to right, #60a5fa, #c084fc);
             width: 0%;
-            transition: width 0.5s ease-out;
+            transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
             border-radius: 6px;
         }
 
@@ -246,14 +238,14 @@
         <h1>AI 동물상 테스트</h1>
         <p class="subtitle">나의 얼굴 사진을 올려 분석해 보세요!</p>
 
-        <div class="upload-area" onclick="document.getElementById('file-input').click()">
+        <div class="upload-area" id="upload-area" onclick="document.getElementById('file-input').click()">
             <div id="upload-placeholder">
                 <div class="upload-icon">📸</div>
-                <div class="upload-text">사진을 클릭하여 업로드하세요</div>
+                <div class="upload-text">사진을 클릭하거나 드래그하여 업로드하세요</div>
             </div>
             <img id="image-preview" alt="Preview">
         </div>
-        <input type="file" id="file-input" accept="image/*" onchange="handleFileUpload(this)">
+        <input type="file" id="file-input" accept="image/*" onchange="handleFileUpload(this.files)">
 
         <div id="loading">AI가 분석 중입니다...</div>
 
@@ -270,8 +262,26 @@
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <script type="text/javascript">
         const URL = "https://teachablemachine.withgoogle.com/models/Oeeq0njDl/";
+        const uploadArea = document.getElementById('upload-area');
 
         let model, labelContainer, maxPredictions;
+
+        // 드래그 앤 드롭 이벤트 처리
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            handleFileUpload(files);
+        });
 
         // 모델 로드 함수
         async function loadModel() {
@@ -284,8 +294,8 @@
         }
 
         // 파일 업로드 핸들러
-        async function handleFileUpload(input) {
-            if (input.files && input.files[0]) {
+        async function handleFileUpload(files) {
+            if (files && files[0]) {
                 const reader = new FileReader();
 
                 reader.onload = async function (e) {
@@ -306,7 +316,7 @@
                     await predict(preview);
                 };
 
-                reader.readAsDataURL(input.files[0]);
+                reader.readAsDataURL(files[0]);
             }
         }
 
@@ -316,6 +326,9 @@
             labelContainer = document.getElementById("label-container");
             labelContainer.style.display = 'flex';
             document.getElementById('loading').style.display = 'none';
+
+            // 결과 정렬 (확률 높은 순)
+            prediction.sort((a, b) => b.probability - a.probability);
 
             for (let i = 0; i < maxPredictions; i++) {
                 const className = prediction[i].className;
