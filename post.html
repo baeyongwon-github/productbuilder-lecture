@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="프리미엄 로또 및 인공지능 분석 관련 정보성 블로그 상세 아티클입니다.">
+    <meta property="og:title" content="로또 6/45, 진짜 패턴은 존재하는가? 통계학적 고찰 - UtilityLab">
+    <meta property="og:type" content="article">
+    <title>로또 6/45, 진짜 패턴은 존재하는가? - UtilityLab 블로그</title>
+    
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+        :root {
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary-purple: #6366f1;
+            --primary-hover: #4f46e5;
+            --border-light: #e2e8f0;
+            --shadow-soft: 0 10px 40px rgba(0, 0, 0, 0.04);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', sans-serif; }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 네비게이션바 (고정) */
+        .navbar { position: fixed; top: 0; width: 100%; height: 80px; display: flex; justify-content: space-between; align-items: center; padding: 0 5%; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border-light); z-index: 1000; }
+        .nav-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .nav-logo::before { content: ''; display: inline-block; width: 24px; height: 24px; background: linear-gradient(135deg, var(--primary-purple), #a855f7); border-radius: 8px; }
+        .nav-links { display: flex; gap: 2.5rem; }
+        .nav-item { color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: color 0.3s ease; }
+        .nav-item:hover, .nav-item.active { color: var(--text-main); }
+
+        /* 메인 컨텐츠 영역 */
+        .main-content { width: 100%; max-width: 800px; padding: 0 20px; display: flex; flex-direction: column; margin-top: 120px; }
+
+        /* 아티클 헤더 */
+        .article-header { margin-bottom: 3rem; text-align: center; }
+        .category-badge { display: inline-block; background: rgba(99, 102, 241, 0.1); color: var(--primary-purple); padding: 6px 16px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; margin-bottom: 1.5rem; }
+        .article-title { font-size: 2.8rem; font-weight: 800; line-height: 1.3; margin-bottom: 1.5rem; color: var(--text-main); letter-spacing: -0.03em; }
+        .article-meta { color: var(--text-muted); font-size: 0.95rem; display: flex; justify-content: center; gap: 1rem; }
+
+        /* 대표 썸네일 이미지 */
+        .hero-image { width: 100%; height: 400px; background: linear-gradient(135deg, #fbcfe8, #a855f7); border-radius: 24px; margin-bottom: 3rem; box-shadow: var(--shadow-soft); }
+
+        /* 본문 내용 */
+        .article-body { font-size: 1.15rem; line-height: 1.8; color: #334155; margin-bottom: 5rem; }
+        .article-body h3 { font-size: 1.6rem; font-weight: 700; margin-top: 3rem; margin-bottom: 1.5rem; color: var(--text-main); }
+        .article-body p { margin-bottom: 1.5rem; }
+        .article-body blockquote { border-left: 4px solid var(--primary-purple); padding-left: 1.5rem; margin: 2rem 0; font-style: italic; color: var(--text-muted); background: rgba(99, 102, 241, 0.05); padding: 1.5rem; border-radius: 0 12px 12px 0; }
+
+        .back-btn { display: inline-flex; align-items: center; gap: 8px; color: var(--primary-purple); text-decoration: none; font-weight: 600; margin-bottom: 4rem; transition: color 0.3s; }
+        .back-btn:hover { color: var(--primary-hover); }
+
+        /* 푸터 */
+        .footer { width: 100%; background: #0f172a; color: white; padding: 4rem 5% 2rem; display: flex; flex-direction: column; align-items: center; margin-top: auto; }
+        .footer-grid { width: 100%; max-width: 1200px; display: flex; justify-content: space-between; margin-bottom: 3rem; }
+        .footer-col h4 { margin-bottom: 1rem; }
+        .footer-col a { color: #94a3b8; text-decoration: none; display: block; margin-bottom: 0.5rem; }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">UtilityLab</a>
+        <div class="nav-links">
+            <a href="index.html" class="nav-item">로또 번호 분석</a>
+            <a href="animal.html" class="nav-item">동물상 테스트</a>
+            <a href="blog.html" class="nav-item active">블로그</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <a href="blog.html" class="back-btn">← 목록으로 돌아가기</a>
+        
+        <header class="article-header">
+            <span class="category-badge">통계 & 확률</span>
+            <h1 class="article-title">로또 6/45, 진짜 패턴은 존재하는가? 통계학적 고찰</h1>
+            <div class="article-meta">
+                <span>작성자: Editor A</span>
+                <span>•</span>
+                <span>2026.05.10</span>
+            </div>
+        </header>
+
+        <div class="hero-image"></div>
+
+        <article class="article-body">
+            <p>매주 토요일 저녁, 많은 사람들이 일주일간의 작은 희망을 품고 로또 추첨 방송을 지켜봅니다. 로또 6/45의 당첨 확률은 무려 8,145,060분의 1입니다. 이는 번개를 맞을 확률보다 낮다고 알려져 있습니다. 그럼에도 불구하고 인터넷 상에는 수많은 '로또 필승법'과 '당첨 번호 예측 시스템'이 존재합니다. 과연 통계학적 관점에서 진정한 패턴이라는 것이 존재할까요?</p>
+
+            <h3>독립 시행의 함정</h3>
+            <p>로또 추첨은 대표적인 '독립 시행(Independent Trial)'의 예입니다. 즉, 지난주에 7번 공이 나왔다고 해서 이번 주에 7번 공이 나올 확률이 줄어들거나 늘어나지 않습니다. 매 회차마다 각 공이 뽑힐 확률은 동일하게 1/45로 리셋됩니다.</p>
+
+            <blockquote>
+                "주사위를 10번 굴려 1이 연속해서 10번 나왔더라도, 11번째에 1이 나올 확률은 여전히 1/6입니다."
+            </blockquote>
+
+            <p>많은 사람들이 범하는 오류 중 하나가 바로 '도박사의 오류(Gambler's Fallacy)'입니다. 오랫동안 나오지 않은 이른바 '콜드 넘버(Cold Number)'가 이번에는 꼭 나올 것이라고 굳게 믿는 심리 현상이죠.</p>
+
+            <h3>대수의 법칙과 평균 회귀</h3>
+            <p>하지만 조금 더 거시적인 관점에서 접근해보면 흥미로운 점을 발견할 수 있습니다. 수천 회 이상의 추첨이 누적되면 통계학의 '대수의 법칙(Law of Large Numbers)'에 따라 각 번호의 출현 빈도는 결국 평균치에 수렴하게 됩니다.</p>
+            <p>실제로 동행복권의 역대 통계 데이터를 살펴보면 특정 번호가 압도적으로 많이 나오거나 적게 나오는 현상이 점차 줄어들고 전체 빈도수가 평탄해지는 것을 확인할 수 있습니다. 번호 분석가들은 바로 이 점을 파고들어 단기적인 편차를 수학적으로 계산하고자 합니다.</p>
+
+            <h3>결론: 재미와 분석의 경계</h3>
+            <p>결론적으로 로또는 완전히 통제된 조건 하의 난수 발생 확률 게임이므로 절대적인 당첨 공식이나 패턴은 존재하지 않습니다. 그러나 과거 데이터를 분석하고 번호대별 비율을 맞추며 번호를 조합하는 과정 자체는 하나의 즐거운 지적 유희가 될 수 있습니다.</p>
+            <p>건전한 마음가짐으로, 분석을 재미의 요소로만 활용하며 일주일의 작은 활력소로 로또를 대하는 것이 가장 현명한 방법일 것입니다.</p>
+        </article>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3 style="margin-bottom: 1rem;">UtilityLab</h3>
+                <p style="color: #94a3b8; font-size: 0.95rem;">일상의 재미와 유용한 도구를 제공합니다.</p>
+            </div>
+            <div class="footer-col">
+                <h4>서비스</h4>
+                <a href="index.html">로또 번호 추천</a>
+                <a href="animal.html">동물상 테스트</a>
+                <a href="blog.html">공식 블로그</a>
+            </div>
+        </div>
+        <p style="color: #64748b; font-size: 0.85rem; margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; width: 100%; max-width: 1200px; text-align: center;">&copy; 2026 UtilityLab. All rights reserved.</p>
+    </footer>
+</body>
+</html>
