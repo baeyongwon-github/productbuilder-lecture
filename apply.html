@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상담 신청 - 나무를심는아이</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Malgun Gothic', sans-serif; }
+        body { background-color: #F1F8E9; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .form-container { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
+        h2 { text-align: center; color: #2E7D32; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
+        textarea { resize: vertical; height: 100px; }
+        button { width: 100%; padding: 15px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; font-size: 18px; cursor: pointer; transition: 0.3s; font-weight: bold;}
+        button:hover { background-color: #2E7D32; }
+        .back-link { display: block; text-align: center; margin-top: 15px; color: #666; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <h2>상담 신청하기</h2>
+        <form id="applyForm">
+            <div class="form-group">
+                <label for="parentName">학부모님 성함</label>
+                <input type="text" id="parentName" required placeholder="예: 홍길동">
+            </div>
+            <div class="form-group">
+                <label for="phone">연락처</label>
+                <input type="tel" id="phone" required placeholder="예: 010-1234-5678">
+            </div>
+            <div class="form-group">
+                <label for="grade">학생 학년</label>
+                <select id="grade" required>
+                    <option value="">선택해주세요</option>
+                    <option value="초등 저학년">초등 1~3학년</option>
+                    <option value="초등 고학년">초등 4~6학년</option>
+                    <option value="중등부">중등부</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="memo">문의 내용 (선택)</label>
+                <textarea id="memo" placeholder="상담 원하시는 날짜나 궁금한 점을 남겨주세요."></textarea>
+            </div>
+            <button type="submit">신청 완료하기</button>
+        </form>
+        <a href="index.html" class="back-link">메인 홈페이지로 돌아가기</a>
+    </div>
+
+    <script>
+        // 폼 제출 시 데이터 저장하는 스크립트
+        document.getElementById('applyForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // 페이지 새로고침 방지
+
+            // 입력된 데이터 가져오기
+            const newRequest = {
+                date: new Date().toLocaleString('ko-KR'),
+                name: document.getElementById('parentName').value,
+                phone: document.getElementById('phone').value,
+                grade: document.getElementById('grade').value,
+                memo: document.getElementById('memo').value
+            };
+
+            // 기존 데이터 불러오기 (없으면 빈 배열)
+            let requests = JSON.parse(localStorage.getItem('consultRequests')) || [];
+            
+            // 새 데이터 추가 및 저장
+            requests.push(newRequest);
+            localStorage.setItem('consultRequests', JSON.stringify(requests));
+
+            alert('상담 신청이 성공적으로 완료되었습니다! 곧 연락드리겠습니다.');
+            window.location.href = 'index.html'; // 신청 완료 후 메인으로 이동
+        });
+    </script>
+</body>
+</html>

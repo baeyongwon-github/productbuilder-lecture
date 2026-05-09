@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상담 내역 관리자 - 나무를심는아이</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Malgun Gothic', sans-serif; }
+        body { background-color: #f4f4f4; padding: 40px 20px; color: #333; }
+        .admin-container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { color: #2E7D32; margin-bottom: 20px; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;}
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: center; }
+        th { background-color: #F1F8E9; color: #2E7D32; }
+        td.memo-cell { text-align: left; max-width: 300px; }
+        .empty-msg { text-align: center; padding: 30px; color: #777; }
+        .btn-clear { background-color: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 14px;}
+        .btn-clear:hover { background-color: #c0392b; }
+    </style>
+</head>
+<body>
+
+    <div class="admin-container">
+        <h2>
+            상담 신청 내역
+            <button class="btn-clear" onclick="clearData()">전체 기록 삭제</button>
+        </h2>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th width="18%">신청일시</th>
+                    <th width="12%">학부모 성함</th>
+                    <th width="15%">연락처</th>
+                    <th width="15%">학년</th>
+                    <th width="40%">문의 내용</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- 자바스크립트로 데이터가 여기에 들어옵니다 -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // 페이지가 열릴 때 데이터 불러오기
+        function loadData() {
+            const requests = JSON.parse(localStorage.getItem('consultRequests')) || [];
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = ''; // 기존 내용 지우기
+
+            if(requests.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-msg">아직 접수된 상담 신청이 없습니다.</td></tr>';
+                return;
+            }
+
+            // 최신 신청이 위로 오도록 역순(reverse)으로 출력
+            requests.slice().reverse().forEach(req => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${req.date}</td>
+                    <td><strong>${req.name}</strong></td>
+                    <td>${req.phone}</td>
+                    <td>${req.grade}</td>
+                    <td class="memo-cell">${req.memo || '-'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // 전체 기록 삭제 기능
+        function clearData() {
+            if(confirm('정말 모든 상담 신청 기록을 삭제하시겠습니까?')) {
+                localStorage.removeItem('consultRequests');
+                loadData(); // 테이블 새로고침
+            }
+        }
+
+        // 실행
+        loadData();
+    </script>
+</body>
+</html>

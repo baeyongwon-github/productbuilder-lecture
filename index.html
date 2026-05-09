@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프리미엄 로또 번호 생성기</title>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            flex-shrink: 0;
+        }
+
+        p.subtitle {
+            color: #94a3b8;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        /* 탭 메뉴 */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 2rem;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 5px;
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 12px;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .tab-btn.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* 공통 섹션 속성 */
+        .section {
+            display: none;
+            flex-direction: column;
+            flex-grow: 1;
+            overflow-y: auto;
+            /* 스크롤바 디자인 */
+            padding-right: 5px;
+        }
+
+        .section::-webkit-scrollbar {
+            width: 6px;
+        }
+        .section::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        
+        .section.active {
+            display: flex;
+        }
+
+        /* 생성 섹션 */
+        .generate-btn {
+            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4);
+            margin-bottom: 2rem;
+            flex-shrink: 0;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.5);
+        }
+
+        .generate-btn:active {
+            transform: translateY(1px);
+        }
+
+        .results {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* 공 레이아웃 */
+        .lotto-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 100px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .lotto-row.animated {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .ball {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            box-shadow: inset -2px -4px 8px rgba(0,0,0,0.3), 0 4px 6px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .ball:hover {
+            transform: scale(1.15) rotate(5deg);
+        }
+
+        /* 기록 섹션 */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .history-item {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: left;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .history-time {
+            font-size: 0.95rem;
+            color: #cbd5e1;
+            font-weight: 600;
+        }
+
+        .history-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .history-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .history-row .ball {
+            width: 34px;
+            height: 34px;
+            font-size: 0.9rem;
+            box-shadow: inset -1px -2px 4px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .empty-msg {
+            color: #94a3b8;
+            padding: 3rem 0;
+            font-size: 1.1rem;
+        }
+
+        .clear-btn {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .clear-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+            color: #fff;
+        }
+
+        /* Number Colors based on Korean standard Lotto 6/45 */
+        .color-1 { background: radial-gradient(circle at 30% 30%, #ffd438, #fbc400); } /* 1-10 Yellow */
+        .color-2 { background: radial-gradient(circle at 30% 30%, #89d6f5, #69c8f2); } /* 11-20 Blue */
+        .color-3 { background: radial-gradient(circle at 30% 30%, #ff8b8b, #ff7272); } /* 21-30 Red */
+        .color-4 { background: radial-gradient(circle at 30% 30%, #c4c4c4, #aaaaaa); } /* 31-40 Gray */
+        .color-5 { background: radial-gradient(circle at 30% 30%, #c3e665, #b0d840); } /* 41-45 Green */
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+            }
+            .ball {
+                width: 38px;
+                height: 38px;
+                font-size: 1rem;
+            }
+            .lotto-row {
+                gap: 8px;
+                padding: 10px;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            .history-row .ball {
+                width: 28px;
+                height: 28px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>프리미엄 로또 번호 생성기</h1>
+        <p class="subtitle">행운의 번호 5세트를 추천해 드립니다.</p>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-target="generateSection">새로 생성</button>
+            <button class="tab-btn" data-target="historySection">기록 보기</button>
+        </div>
+
+        <!-- 생성 섹션 -->
+        <div id="generateSection" class="section active">
+            <button class="generate-btn" id="generateBtn">로또 번호 생성하기</button>
+            <div class="results" id="results">
+                <!-- 5 rows will be generated here -->
+            </div>
+        </div>
+
+        <!-- 기록 섹션 -->
+        <div id="historySection" class="section">
+            <div class="history-list" id="historyList">
+                <!-- History items will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'lottoHistoryData';
+
+        // --- Tab Logic ---
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // Update active tab button
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+
+                // Update active section
+                document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+                const targetId = e.target.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+
+                // Load history if history tab is clicked
+                if (targetId === 'historySection') {
+                    renderHistory();
+                }
+            });
+        });
+
+        // --- Core Logic ---
+        function getRandomNumbers() {
+            const numbers = new Set();
+            while(numbers.size < 6) {
+                numbers.add(Math.floor(Math.random() * 45) + 1);
+            }
+            return Array.from(numbers).sort((a, b) => a - b);
+        }
+
+        function getColorClass(number) {
+            if (number <= 10) return 'color-1';
+            if (number <= 20) return 'color-2';
+            if (number <= 30) return 'color-3';
+            if (number <= 40) return 'color-4';
+            return 'color-5';
+        }
+
+        function createBall(num) {
+            const ball = document.createElement('div');
+            ball.className = `ball ${getColorClass(num)}`;
+            ball.textContent = num;
+            return ball;
+        }
+
+        // --- History Logic ---
+        function getHistory() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveHistory(sets) {
+            const history = getHistory();
+            const newEntry = {
+                id: Date.now(),
+                time: new Date().toLocaleString('ko-KR', { 
+                    year: 'numeric', month: '2-digit', day: '2-digit', 
+                    hour: '2-digit', minute: '2-digit', second: '2-digit'
+                }),
+                sets: sets
+            };
+            history.unshift(newEntry); // Add to the beginning
+            
+            // Keep only the last 30 entries to prevent localstorage bloat
+            if (history.length > 30) history.pop();
+            
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+        }
+
+        function clearHistory() {
+            if(confirm('모든 생성 기록을 삭제하시겠습니까?')) {
+                localStorage.removeItem(STORAGE_KEY);
+                renderHistory();
+            }
+        }
+
+        function renderHistory() {
+            const listContainer = document.getElementById('historyList');
+            listContainer.innerHTML = '';
+            
+            const history = getHistory();
+
+            if (history.length === 0) {
+                listContainer.innerHTML = '<div class="empty-msg">생성된 이력이 없습니다.</div>';
+                return;
+            }
+
+            // Global clear button for history tab
+            const headerActions = document.createElement('div');
+            headerActions.style.textAlign = 'right';
+            headerActions.style.marginBottom = '1rem';
+            const clearAllBtn = document.createElement('button');
+            clearAllBtn.className = 'clear-btn';
+            clearAllBtn.textContent = '전체 기록 삭제';
+            clearAllBtn.onclick = clearHistory;
+            headerActions.appendChild(clearAllBtn);
+            listContainer.appendChild(headerActions);
+
+            history.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+
+                const header = document.createElement('div');
+                header.className = 'history-header';
+                
+                const timeSpan = document.createElement('span');
+                timeSpan.className = 'history-time';
+                timeSpan.textContent = item.time;
+                
+                header.appendChild(timeSpan);
+                historyItem.appendChild(header);
+
+                item.sets.forEach(numbers => {
+                    const row = document.createElement('div');
+                    row.className = 'history-row';
+                    numbers.forEach(num => {
+                        row.appendChild(createBall(num));
+                    });
+                    historyItem.appendChild(row);
+                });
+
+                listContainer.appendChild(historyItem);
+            });
+        }
+
+        // --- Generate Button Logic ---
+        document.getElementById('generateBtn').addEventListener('click', () => {
+            const resultsContainer = document.getElementById('results');
+            resultsContainer.innerHTML = ''; // Clear previous results
+
+            const generatedSets = [];
+
+            for (let i = 0; i < 5; i++) {
+                const numbers = getRandomNumbers();
+                generatedSets.push(numbers);
+
+                setTimeout(() => {
+                    const row = document.createElement('div');
+                    row.className = 'lotto-row animated';
+                    
+                    numbers.forEach(num => {
+                        row.appendChild(createBall(num));
+                    });
+                    
+                    resultsContainer.appendChild(row);
+                }, i * 200); // Staggered animation
+            }
+
+            // Save to history once all sets are generated
+            saveHistory(generatedSets);
+        });
+    </script>
+</body>
+</html>
