@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 동물상 테스트</title>
+    <title>AI 동물상 테스트 - 사진 업로드</title>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
@@ -96,25 +96,49 @@
             flex-shrink: 0;
         }
 
-        #webcam-container {
+        /* 업로드 영역 스타일 */
+        .upload-area {
             margin: 0 auto 2rem;
             width: 300px;
             height: 300px;
             border-radius: 24px;
-            overflow: hidden;
-            background: rgba(0, 0, 0, 0.3);
-            border: 4px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.2);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
             position: relative;
+            overflow: hidden;
         }
 
-        #webcam-container canvas {
-            width: 100% !important;
-            height: 100% !important;
+        .upload-area:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: #60a5fa;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        #image-preview {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
+            display: none;
             border-radius: 20px;
+        }
+
+        #file-input {
+            display: none;
         }
 
         .start-btn {
@@ -142,6 +166,7 @@
             flex-direction: column;
             gap: 15px;
             margin-top: 1rem;
+            display: none; /* 초기에는 숨김 */
         }
 
         .prediction-bar {
@@ -182,8 +207,15 @@
             height: 100%;
             background: linear-gradient(to right, #60a5fa, #c084fc);
             width: 0%;
-            transition: width 0.3s ease;
+            transition: width 0.5s ease-out;
             border-radius: 6px;
+        }
+
+        #loading {
+            display: none;
+            color: #60a5fa;
+            margin-bottom: 1rem;
+            font-weight: 600;
         }
 
         /* Mobile Responsive */
@@ -196,7 +228,7 @@
                 font-size: 1.8rem;
             }
 
-            #webcam-container {
+            .upload-area {
                 width: 240px;
                 height: 240px;
             }
@@ -212,14 +244,19 @@
 
     <div class="container">
         <h1>AI 동물상 테스트</h1>
-        <p class="subtitle">나의 얼굴은 어떤 동물과 닮았을까요?</p>
+        <p class="subtitle">나의 얼굴 사진을 올려 분석해 보세요!</p>
 
-        <button class="start-btn" type="button" onclick="init()" id="startBtn">테스트 시작하기</button>
-
-        <div id="webcam-container">
-            <!-- Webcam will be loaded here -->
-             <div style="color: #94a3b8; font-size: 0.9rem;">카메라 권한이 필요합니다.</div>
+        <div class="upload-area" onclick="document.getElementById('file-input').click()">
+            <div id="upload-placeholder">
+                <div class="upload-icon">📸</div>
+                <div class="upload-text">사진을 클릭하여 업로드하세요</div>
+            </div>
+            <img id="image-preview" alt="Preview">
         </div>
+        <input type="file" id="file-input" accept="image/*" onchange="handleFileUpload(this)">
+
+        <div id="loading">AI가 분석 중입니다...</div>
+
         <div id="label-container">
             <!-- Results will be loaded here -->
         </div>
@@ -234,62 +271,72 @@
     <script type="text/javascript">
         const URL = "https://teachablemachine.withgoogle.com/models/Oeeq0njDl/";
 
-        let model, webcam, labelContainer, maxPredictions;
+        let model, labelContainer, maxPredictions;
 
-        async function init() {
-            document.getElementById('startBtn').style.display = 'none';
-            document.getElementById('webcam-container').innerHTML = ''; // Clear message
-
-            const modelURL = URL + "model.json";
-            const metadataURL = URL + "metadata.json";
-
-            model = await tmImage.load(modelURL, metadataURL);
-            maxPredictions = model.getTotalClasses();
-
-            const flip = true; 
-            webcam = new tmImage.Webcam(300, 300, flip); 
-            await webcam.setup(); 
-            await webcam.play();
-            window.requestAnimationFrame(loop);
-
-            document.getElementById("webcam-container").appendChild(webcam.canvas);
-            labelContainer = document.getElementById("label-container");
-            for (let i = 0; i < maxPredictions; i++) {
-                const bar = document.createElement("div");
-                bar.className = "prediction-bar";
-                bar.innerHTML = `
-                    <div class="prediction-info">
-                        <span class="class-name" id="class-name-${i}">-</span>
-                        <span class="probability" id="probability-${i}">0%</span>
-                    </div>
-                    <div class="progress-bg">
-                        <div class="progress-fill" id="progress-fill-${i}"></div>
-                    </div>
-                `;
-                labelContainer.appendChild(bar);
+        // 모델 로드 함수
+        async function loadModel() {
+            if (!model) {
+                const modelURL = URL + "model.json";
+                const metadataURL = URL + "metadata.json";
+                model = await tmImage.load(modelURL, metadataURL);
+                maxPredictions = model.getTotalClasses();
             }
         }
 
-        async function loop() {
-            webcam.update(); 
-            await predict();
-            window.requestAnimationFrame(loop);
+        // 파일 업로드 핸들러
+        async function handleFileUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = async function (e) {
+                    // 미리보기 설정
+                    const preview = document.getElementById('image-preview');
+                    const placeholder = document.getElementById('upload-placeholder');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    placeholder.style.display = 'none';
+
+                    // 결과창 초기화 및 로딩 표시
+                    document.getElementById('loading').style.display = 'block';
+                    document.getElementById('label-container').style.display = 'none';
+                    document.getElementById('label-container').innerHTML = '';
+
+                    // 모델 로드 및 예측
+                    await loadModel();
+                    await predict(preview);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
         }
 
-        async function predict() {
-            const prediction = await model.predict(webcam.canvas);
+        async function predict(imageElement) {
+            const prediction = await model.predict(imageElement);
+            
+            labelContainer = document.getElementById("label-container");
+            labelContainer.style.display = 'flex';
+            document.getElementById('loading').style.display = 'none';
+
             for (let i = 0; i < maxPredictions; i++) {
                 const className = prediction[i].className;
                 const probability = (prediction[i].probability * 100).toFixed(0);
                 
-                // Display specific labels
                 let displayName = className;
                 if(className === "dog") displayName = "강아지상";
                 if(className === "cat") displayName = "고양이상";
 
-                document.getElementById(`class-name-${i}`).innerText = displayName;
-                document.getElementById(`probability-${i}`).innerText = probability + "%";
-                document.getElementById(`progress-fill-${i}`).style.width = probability + "%";
+                const bar = document.createElement("div");
+                bar.className = "prediction-bar";
+                bar.innerHTML = `
+                    <div class="prediction-info">
+                        <span class="class-name">${displayName}</span>
+                        <span class="probability">${probability}%</span>
+                    </div>
+                    <div class="progress-bg">
+                        <div class="progress-fill" style="width: ${probability}%"></div>
+                    </div>
+                `;
+                labelContainer.appendChild(bar);
             }
         }
     </script>
