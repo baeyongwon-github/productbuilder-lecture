@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 동물상 테스트</title>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 60px 20px 20px;
+        }
+
+        /* 메인 네비게이션 탭 */
+        .main-nav {
+            position: fixed;
+            top: 20px;
+            display: flex;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 8px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-item:hover:not(.active) {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            flex-shrink: 0;
+        }
+
+        p.subtitle {
+            color: #94a3b8;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        #webcam-container {
+            margin: 0 auto 2rem;
+            width: 300px;
+            height: 300px;
+            border-radius: 24px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.3);
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        #webcam-container canvas {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover;
+            border-radius: 20px;
+        }
+
+        .start-btn {
+            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4);
+            margin-bottom: 2rem;
+            flex-shrink: 0;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.5);
+        }
+
+        #label-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 1rem;
+        }
+
+        .prediction-bar {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .prediction-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .class-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #cbd5e1;
+        }
+
+        .probability {
+            font-weight: 800;
+            color: #60a5fa;
+        }
+
+        .progress-bg {
+            background: rgba(255, 255, 255, 0.05);
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #60a5fa, #c084fc);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 6px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            #webcam-container {
+                width: 240px;
+                height: 240px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="main-nav">
+        <a href="index.html" class="nav-item">로또 번호 생성</a>
+        <a href="animal.html" class="nav-item active">동물상 테스트</a>
+    </nav>
+
+    <div class="container">
+        <h1>AI 동물상 테스트</h1>
+        <p class="subtitle">나의 얼굴은 어떤 동물과 닮았을까요?</p>
+
+        <button class="start-btn" type="button" onclick="init()" id="startBtn">테스트 시작하기</button>
+
+        <div id="webcam-container">
+            <!-- Webcam will be loaded here -->
+             <div style="color: #94a3b8; font-size: 0.9rem;">카메라 권한이 필요합니다.</div>
+        </div>
+        <div id="label-container">
+            <!-- Results will be loaded here -->
+        </div>
+
+        <a href="partnership.html"
+            style="margin-top: 1.5rem; color: #94a3b8; text-decoration: none; font-size: 0.85rem; transition: color 0.3s;"
+            onmouseover="this.style.color='white'" onmouseout="this.style.color='#94a3b8'">비즈니스 제휴 문의</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <script type="text/javascript">
+        const URL = "https://teachablemachine.withgoogle.com/models/Oeeq0njDl/";
+
+        let model, webcam, labelContainer, maxPredictions;
+
+        async function init() {
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('webcam-container').innerHTML = ''; // Clear message
+
+            const modelURL = URL + "model.json";
+            const metadataURL = URL + "metadata.json";
+
+            model = await tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
+
+            const flip = true; 
+            webcam = new tmImage.Webcam(300, 300, flip); 
+            await webcam.setup(); 
+            await webcam.play();
+            window.requestAnimationFrame(loop);
+
+            document.getElementById("webcam-container").appendChild(webcam.canvas);
+            labelContainer = document.getElementById("label-container");
+            for (let i = 0; i < maxPredictions; i++) {
+                const bar = document.createElement("div");
+                bar.className = "prediction-bar";
+                bar.innerHTML = `
+                    <div class="prediction-info">
+                        <span class="class-name" id="class-name-${i}">-</span>
+                        <span class="probability" id="probability-${i}">0%</span>
+                    </div>
+                    <div class="progress-bg">
+                        <div class="progress-fill" id="progress-fill-${i}"></div>
+                    </div>
+                `;
+                labelContainer.appendChild(bar);
+            }
+        }
+
+        async function loop() {
+            webcam.update(); 
+            await predict();
+            window.requestAnimationFrame(loop);
+        }
+
+        async function predict() {
+            const prediction = await model.predict(webcam.canvas);
+            for (let i = 0; i < maxPredictions; i++) {
+                const className = prediction[i].className;
+                const probability = (prediction[i].probability * 100).toFixed(0);
+                
+                // Display specific labels
+                let displayName = className;
+                if(className === "dog") displayName = "강아지상";
+                if(className === "cat") displayName = "고양이상";
+
+                document.getElementById(`class-name-${i}`).innerText = displayName;
+                document.getElementById(`probability-${i}`).innerText = probability + "%";
+                document.getElementById(`progress-fill-${i}`).style.width = probability + "%";
+            }
+        }
+    </script>
+</body>
+
+</html>
