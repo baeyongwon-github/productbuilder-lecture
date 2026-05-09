@@ -262,6 +262,48 @@
         .color-4 { background: radial-gradient(circle at 30% 30%, #c4c4c4, #aaaaaa); } /* 31-40 Gray */
         .color-5 { background: radial-gradient(circle at 30% 30%, #c3e665, #b0d840); } /* 41-45 Green */
 
+        /* 통계 섹션 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 12px;
+            padding: 10px;
+        }
+
+        .stats-item {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .stats-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .stats-item .ball {
+            width: 32px;
+            height: 32px;
+            font-size: 0.85rem;
+        }
+
+        .stats-count {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #60a5fa;
+        }
+
+        .stats-label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
         @keyframes fadeInUp {
             to {
                 opacity: 1;
@@ -291,6 +333,9 @@
                 height: 28px;
                 font-size: 0.8rem;
             }
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
     </style>
 </head>
@@ -302,6 +347,7 @@
         <div class="tabs">
             <button class="tab-btn active" data-target="generateSection">새로 생성</button>
             <button class="tab-btn" data-target="historySection">기록 보기</button>
+            <button class="tab-btn" data-target="statsSection">통계 보기</button>
         </div>
 
         <!-- 생성 섹션 -->
@@ -318,10 +364,18 @@
                 <!-- History items will be populated here -->
             </div>
         </div>
+
+        <!-- 통계 섹션 -->
+        <div id="statsSection" class="section">
+            <div class="stats-grid" id="statsGrid">
+                <!-- Stats items will be populated here -->
+            </div>
+        </div>
     </div>
 
     <script>
         const STORAGE_KEY = 'lottoHistoryData';
+        const STATS_KEY = 'lottoStatsData';
 
         // --- Tab Logic ---
         document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -335,9 +389,11 @@
                 const targetId = e.target.getAttribute('data-target');
                 document.getElementById(targetId).classList.add('active');
 
-                // Load history if history tab is clicked
+                // Load content based on tab
                 if (targetId === 'historySection') {
                     renderHistory();
+                } else if (targetId === 'statsSection') {
+                    renderStats();
                 }
             });
         });
@@ -366,6 +422,84 @@
             return ball;
         }
 
+        // --- Stats Logic ---
+        function getStats() {
+            try {
+                return JSON.parse(localStorage.getItem(STATS_KEY) || '{}');
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function initStatsFromHistory() {
+            const stats = getStats();
+            // Only init if stats is completely empty
+            if (Object.keys(stats).length === 0) {
+                const history = getHistory();
+                if (history.length > 0) {
+                    history.forEach(entry => {
+                        updateStats(entry.sets);
+                    });
+                }
+            }
+        }
+
+        function updateStats(sets) {
+            const stats = getStats();
+            sets.forEach(set => {
+                set.forEach(num => {
+                    stats[num] = (stats[num] || 0) + 1;
+                });
+            });
+            localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+        }
+
+        function clearStats() {
+            if(confirm('누적 통계 데이터를 초기화하시겠습니까?')) {
+                localStorage.removeItem(STATS_KEY);
+                renderStats();
+            }
+        }
+
+        function renderStats() {
+            const gridContainer = document.getElementById('statsGrid');
+            gridContainer.innerHTML = '';
+            
+            const stats = getStats();
+
+            // Header for stats
+            const headerActions = document.createElement('div');
+            headerActions.style.gridColumn = '1 / -1';
+            headerActions.style.textAlign = 'right';
+            headerActions.style.marginBottom = '1rem';
+            const clearAllBtn = document.createElement('button');
+            clearAllBtn.className = 'clear-btn';
+            clearAllBtn.textContent = '통계 초기화';
+            clearAllBtn.onclick = clearStats;
+            headerActions.appendChild(clearAllBtn);
+            gridContainer.appendChild(headerActions);
+
+            for (let i = 1; i <= 45; i++) {
+                const count = stats[i] || 0;
+                const item = document.createElement('div');
+                item.className = 'stats-item';
+                
+                item.appendChild(createBall(i));
+                
+                const countSpan = document.createElement('span');
+                countSpan.className = 'stats-count';
+                countSpan.textContent = `${count}회`;
+                
+                const labelSpan = document.createElement('span');
+                labelSpan.className = 'stats-label';
+                labelSpan.textContent = '추천됨';
+                
+                item.appendChild(countSpan);
+                item.appendChild(labelSpan);
+                gridContainer.appendChild(item);
+            }
+        }
+
         // --- History Logic ---
         function getHistory() {
             try {
@@ -391,6 +525,9 @@
             if (history.length > 30) history.pop();
             
             localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+            
+            // Update cumulative stats
+            updateStats(sets);
         }
 
         function clearHistory() {
@@ -475,6 +612,9 @@
             // Save to history once all sets are generated
             saveHistory(generatedSets);
         });
+
+        // --- Init ---
+        initStatsFromHistory();
     </script>
 </body>
 </html>
