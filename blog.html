@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>블로그 - 프리미엄 인사이트</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5553605413382831"
+     crossorigin="anonymous"></script>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', sans-serif; }
+        body { background: #0f172a; color: #ffffff; padding: 60px 20px 20px; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        
+        .main-nav { position: fixed; top: 20px; display: flex; gap: 10px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); padding: 8px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); z-index: 100; }
+        .nav-item { padding: 10px 20px; color: #94a3b8; text-decoration: none; font-weight: 600; border-radius: 10px; transition: all 0.3s ease; }
+        .nav-item.active { background: rgba(255, 255, 255, 0.1); color: white; }
+        
+        .container { max-width: 900px; width: 100%; margin-top: 40px; }
+        h1 { font-size: 2.5rem; text-align: center; margin-bottom: 1rem; background: linear-gradient(to right, #60a5fa, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .blog-subtitle { text-align: center; color: #94a3b8; margin-bottom: 3rem; }
+        
+        .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
+        .blog-card { background: rgba(255, 255, 255, 0.03); border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; transition: transform 0.3s; cursor: pointer; text-decoration: none; color: inherit; }
+        .blog-card:hover { transform: translateY(-10px); background: rgba(255, 255, 255, 0.05); }
+        .blog-img { width: 100%; height: 180px; background: linear-gradient(45deg, #1e293b, #334155); display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+        .blog-content { padding: 20px; }
+        .blog-date { color: #60a5fa; font-size: 0.85rem; font-weight: 600; margin-bottom: 10px; display: block; }
+        .blog-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; line-height: 1.4; color: white; }
+        .blog-excerpt { color: #94a3b8; font-size: 0.95rem; line-height: 1.6; }
+        
+        .footer { width: 100%; padding: 40px 20px; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: #64748b; margin-top: 5rem; }
+        .footer a { color: #94a3b8; text-decoration: none; margin: 0 15px; }
+    </style>
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="index.html" class="nav-item">로또 번호 생성</a>
+        <a href="animal.html" class="nav-item">동물상 테스트</a>
+        <a href="blog.html" class="nav-item active">블로그</a>
+    </nav>
+
+    <div class="container">
+        <h1>Blog Insights</h1>
+        <p class="blog-subtitle">최신 기술 트렌드와 행운을 부르는 데이터 분석</p>
+
+        <div class="blog-grid">
+            <a href="blog-post1.html" class="blog-card">
+                <div class="blog-img">🤖</div>
+                <div class="blog-content">
+                    <span class="blog-date">2026. 05. 09</span>
+                    <h2 class="blog-title">AI 기술이 바꾸는 일상: 동물상 테스트의 원리</h2>
+                    <p class="blog-excerpt">딥러닝 인식 기술이 어떻게 우리의 얼굴에서 동물의 이미지를 찾아내는지, 그 흥미로운 과정을 살펴봅니다.</p>
+                </div>
+            </a>
+
+            <a href="blog-post2.html" class="blog-card">
+                <div class="blog-img">🍀</div>
+                <div class="blog-content">
+                    <span class="blog-date">2026. 05. 08</span>
+                    <h2 class="blog-title">로또 번호 생성, 과연 전략이 있을까? 데이터로 보는 행운</h2>
+                    <p class="blog-excerpt">무작위 확률 속에서도 나만의 패턴을 찾는 방법과 생성기를 효과적으로 활용하는 팁을 공개합니다.</p>
+                </div>
+            </a>
+
+            <a href="blog-post3.html" class="blog-card">
+                <div class="blog-img">✨</div>
+                <div class="blog-content">
+                    <span class="blog-date">2026. 05. 07</span>
+                    <h2 class="blog-title">2026년 웹 트렌드: 사용자 경험을 극대화하는 미니멀 디자인</h2>
+                    <p class="blog-excerpt">복잡함을 덜어내고 핵심 가치에 집중하는 최근 웹 디자인의 흐름과 그 중요성에 대해 이야기합니다.</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div style="margin-bottom: 15px;">
+            <a href="about.html">서비스 소개</a>
+            <a href="privacy.html">개인정보처리방침</a>
+            <a href="partnership.html">제휴 문의</a>
+        </div>
+        <p>&copy; 2026 Premium Insights. All rights reserved.</p>
+    </footer>
+</body>
+</html>
