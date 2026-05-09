@@ -1,85 +1,173 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>블로그 - 프리미엄 인사이트</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5553605413382831"
-     crossorigin="anonymous"></script>
+    <meta name="description" content="프리미엄 로또 및 인공지능 분석 관련 정보성 블로그. 확률, 통계, AI 알고리즘 등에 관한 전문적인 칼럼과 유용한 정보를 확인하세요.">
+    <meta name="keywords" content="로또블로그, 통계분석, 확률, 인공지능, AI관상, 정보성블로그">
+    <meta property="og:title" content="UtilityLab 공식 블로그">
+    <meta property="og:description" content="AI 분석과 수학적 통계에 대한 유용하고 깊이 있는 정보를 제공합니다.">
+    <meta property="og:type" content="website">
+    <title>UtilityLab 공식 블로그</title>
+    
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+        :root {
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary-purple: #6366f1;
+            --primary-hover: #4f46e5;
+            --border-light: #e2e8f0;
+            --shadow-soft: 0 10px 40px rgba(0, 0, 0, 0.04);
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', sans-serif; }
-        body { background: #0f172a; color: #ffffff; padding: 60px 20px 20px; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 네비게이션바 (고정) */
+        .navbar { position: fixed; top: 0; width: 100%; height: 80px; display: flex; justify-content: space-between; align-items: center; padding: 0 5%; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border-light); z-index: 1000; }
+        .nav-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .nav-logo::before { content: ''; display: inline-block; width: 24px; height: 24px; background: linear-gradient(135deg, var(--primary-purple), #a855f7); border-radius: 8px; }
+        .nav-links { display: flex; gap: 2.5rem; }
+        .nav-item { color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: color 0.3s ease; }
+        .nav-item:hover, .nav-item.active { color: var(--text-main); }
+
+        /* 메인 컨텐츠 영역 */
+        .main-content { width: 100%; max-width: 1200px; padding: 0 20px; display: flex; flex-direction: column; align-items: center; margin-top: 120px; }
+
+        .page-header { text-align: center; margin-bottom: 4rem; }
+        .page-header h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
+        .page-header p { font-size: 1.1rem; color: var(--text-muted); max-width: 600px; margin: 0 auto; line-height: 1.6; }
+
+        /* 블로그 리스트 (Grid) */
+        .blog-grid { width: 100%; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; margin-bottom: 5rem; }
+
+        .blog-card { background: var(--bg-card); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-soft); border: 1px solid var(--border-light); transition: transform 0.3s ease; cursor: pointer; display: flex; flex-direction: column; }
+        .blog-card:hover { transform: translateY(-5px); border-color: rgba(99, 102, 241, 0.3); }
+
+        .blog-thumbnail { width: 100%; height: 200px; background: #e2e8f0; position: relative; }
+        /* 썸네일 그라데이션 가짜 이미지 */
+        .thumb-1 { background: linear-gradient(135deg, #fbcfe8, #a855f7); }
+        .thumb-2 { background: linear-gradient(135deg, #bfdbfe, #3b82f6); }
+        .thumb-3 { background: linear-gradient(135deg, #fef08a, #f59e0b); }
+        .thumb-4 { background: linear-gradient(135deg, #a7f3d0, #10b981); }
+
+        .blog-content { padding: 2rem; flex: 1; display: flex; flex-direction: column; }
+        .blog-category { color: var(--primary-purple); font-size: 0.85rem; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
+        .blog-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.4; color: var(--text-main); }
+        .blog-excerpt { color: var(--text-muted); font-size: 1rem; line-height: 1.6; margin-bottom: 1.5rem; flex: 1; }
         
-        .main-nav { position: fixed; top: 20px; display: flex; gap: 10px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); padding: 8px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); z-index: 100; }
-        .nav-item { padding: 10px 20px; color: #94a3b8; text-decoration: none; font-weight: 600; border-radius: 10px; transition: all 0.3s ease; }
-        .nav-item.active { background: rgba(255, 255, 255, 0.1); color: white; }
-        
-        .container { max-width: 900px; width: 100%; margin-top: 40px; }
-        h1 { font-size: 2.5rem; text-align: center; margin-bottom: 1rem; background: linear-gradient(to right, #60a5fa, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .blog-subtitle { text-align: center; color: #94a3b8; margin-bottom: 3rem; }
-        
-        .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
-        .blog-card { background: rgba(255, 255, 255, 0.03); border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; transition: transform 0.3s; cursor: pointer; text-decoration: none; color: inherit; }
-        .blog-card:hover { transform: translateY(-10px); background: rgba(255, 255, 255, 0.05); }
-        .blog-img { width: 100%; height: 180px; background: linear-gradient(45deg, #1e293b, #334155); display: flex; align-items: center; justify-content: center; font-size: 3rem; }
-        .blog-content { padding: 20px; }
-        .blog-date { color: #60a5fa; font-size: 0.85rem; font-weight: 600; margin-bottom: 10px; display: block; }
-        .blog-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; line-height: 1.4; color: white; }
-        .blog-excerpt { color: #94a3b8; font-size: 0.95rem; line-height: 1.6; }
-        
-        .footer { width: 100%; padding: 40px 20px; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: #64748b; margin-top: 5rem; }
-        .footer a { color: #94a3b8; text-decoration: none; margin: 0 15px; }
+        .blog-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-light); padding-top: 1rem; font-size: 0.9rem; color: #94a3b8; }
+
+        /* 푸터 */
+        .footer { width: 100%; background: #0f172a; color: white; padding: 4rem 5% 2rem; display: flex; flex-direction: column; align-items: center; }
+        .footer-grid { width: 100%; max-width: 1200px; display: flex; justify-content: space-between; margin-bottom: 3rem; }
+        .footer-col h4 { margin-bottom: 1rem; }
+        .footer-col a { color: #94a3b8; text-decoration: none; display: block; margin-bottom: 0.5rem; }
     </style>
 </head>
+
 <body>
-    <nav class="main-nav">
-        <a href="index.html" class="nav-item">로또 번호 생성</a>
-        <a href="animal.html" class="nav-item">동물상 테스트</a>
-        <a href="blog.html" class="nav-item active">블로그</a>
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">UtilityLab</a>
+        <div class="nav-links">
+            <a href="index.html" class="nav-item">로또 번호 분석</a>
+            <a href="animal.html" class="nav-item">동물상 테스트</a>
+            <a href="blog.html" class="nav-item active">블로그</a>
+        </div>
     </nav>
 
-    <div class="container">
-        <h1>Blog Insights</h1>
-        <p class="blog-subtitle">최신 기술 트렌드와 행운을 부르는 데이터 분석</p>
+    <main class="main-content">
+        <div class="page-header">
+            <h1>블로그 & 아티클</h1>
+            <p>수학적 확률, 인공지능 분석 알고리즘, 관상학적 데이터 분석 등 다양하고 깊이 있는 인사이트를 제공합니다. 구글 애드센스 고품질 가이드라인을 준수하는 유용한 정보를 확인하세요.</p>
+        </div>
 
         <div class="blog-grid">
-            <a href="blog-post1.html" class="blog-card">
-                <div class="blog-img">🤖</div>
+            <!-- 아티클 1 -->
+            <article class="blog-card">
+                <div class="blog-thumbnail thumb-1"></div>
                 <div class="blog-content">
-                    <span class="blog-date">2026. 05. 09</span>
-                    <h2 class="blog-title">AI 기술이 바꾸는 일상: 동물상 테스트의 원리</h2>
-                    <p class="blog-excerpt">딥러닝 인식 기술이 어떻게 우리의 얼굴에서 동물의 이미지를 찾아내는지, 그 흥미로운 과정을 살펴봅니다.</p>
+                    <span class="blog-category">통계 & 확률</span>
+                    <h2 class="blog-title">로또 6/45, 진짜 패턴은 존재하는가? 통계학적 고찰</h2>
+                    <p class="blog-excerpt">수많은 사람들이 과거의 데이터를 분석하여 패턴을 찾으려 합니다. 대수의 법칙(Law of Large Numbers)과 독립 시행의 관점에서 로또 번호의 출현 빈도를 심층 분석해 보았습니다.</p>
+                    <div class="blog-footer">
+                        <span>작성자: Editor A</span>
+                        <span>2026.05.10</span>
+                    </div>
                 </div>
-            </a>
+            </article>
 
-            <a href="blog-post2.html" class="blog-card">
-                <div class="blog-img">🍀</div>
+            <!-- 아티클 2 -->
+            <article class="blog-card">
+                <div class="blog-thumbnail thumb-2"></div>
                 <div class="blog-content">
-                    <span class="blog-date">2026. 05. 08</span>
-                    <h2 class="blog-title">로또 번호 생성, 과연 전략이 있을까? 데이터로 보는 행운</h2>
-                    <p class="blog-excerpt">무작위 확률 속에서도 나만의 패턴을 찾는 방법과 생성기를 효과적으로 활용하는 팁을 공개합니다.</p>
+                    <span class="blog-category">AI 기술</span>
+                    <h2 class="blog-title">관상을 분석하는 딥러닝, 동물상 테스트의 원리</h2>
+                    <p class="blog-excerpt">우리가 재미로 하는 동물상 테스트 뒤에는 복잡한 Convolutional Neural Network(CNN) 기술이 숨어있습니다. AI가 어떻게 이목구비의 특징을 추출하고 분류하는지 쉽게 알아봅니다.</p>
+                    <div class="blog-footer">
+                        <span>작성자: Tech Lab</span>
+                        <span>2026.04.28</span>
+                    </div>
                 </div>
-            </a>
+            </article>
 
-            <a href="blog-post3.html" class="blog-card">
-                <div class="blog-img">✨</div>
+            <!-- 아티클 3 -->
+            <article class="blog-card">
+                <div class="blog-thumbnail thumb-3"></div>
                 <div class="blog-content">
-                    <span class="blog-date">2026. 05. 07</span>
-                    <h2 class="blog-title">2026년 웹 트렌드: 사용자 경험을 극대화하는 미니멀 디자인</h2>
-                    <p class="blog-excerpt">복잡함을 덜어내고 핵심 가치에 집중하는 최근 웹 디자인의 흐름과 그 중요성에 대해 이야기합니다.</p>
+                    <span class="blog-category">마인드셋</span>
+                    <h2 class="blog-title">복권을 대하는 건강한 태도와 여가 생활</h2>
+                    <p class="blog-excerpt">일확천금을 노리는 과도한 기대감보다는 일주일의 소소한 즐거움으로 복권을 소비하는 마인드셋의 중요성. 건전한 복권 문화를 만들기 위한 가이드를 제시합니다.</p>
+                    <div class="blog-footer">
+                        <span>작성자: Editor B</span>
+                        <span>2026.04.15</span>
+                    </div>
                 </div>
-            </a>
+            </article>
+
+            <!-- 아티클 4 -->
+            <article class="blog-card">
+                <div class="blog-thumbnail thumb-4"></div>
+                <div class="blog-content">
+                    <span class="blog-category">트렌드</span>
+                    <h2 class="blog-title">웹 브라우저에서 구동되는 머신러닝의 진화 (WebML)</h2>
+                    <p class="blog-excerpt">별도의 서버 없이 사용자의 브라우저 내에서 직접 AI 모델을 구동하는 기술들이 각광받고 있습니다. 개인정보 보호와 비용 절감의 두 마리 토끼를 잡는 WebML 생태계를 소개합니다.</p>
+                    <div class="blog-footer">
+                        <span>작성자: Tech Lab</span>
+                        <span>2026.04.02</span>
+                    </div>
+                </div>
+            </article>
         </div>
-    </div>
+    </main>
 
     <footer class="footer">
-        <div style="margin-bottom: 15px;">
-            <a href="about.html">서비스 소개</a>
-            <a href="privacy.html">개인정보처리방침</a>
-            <a href="partnership.html">제휴 문의</a>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3 style="margin-bottom: 1rem;">UtilityLab</h3>
+                <p style="color: #94a3b8; font-size: 0.95rem;">일상의 재미와 유용한 도구를 제공합니다.</p>
+            </div>
+            <div class="footer-col">
+                <h4>서비스</h4>
+                <a href="index.html">로또 번호 추천</a>
+                <a href="animal.html">동물상 테스트</a>
+                <a href="blog.html">공식 블로그</a>
+            </div>
         </div>
-        <p>&copy; 2026 Premium Insights. All rights reserved.</p>
+        <p style="color: #64748b; font-size: 0.85rem; margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; width: 100%; max-width: 1200px; text-align: center;">&copy; 2026 UtilityLab. All rights reserved.</p>
     </footer>
 </body>
 </html>

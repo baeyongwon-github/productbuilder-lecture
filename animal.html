@@ -4,379 +4,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 동물상 테스트 - 사진 업로드</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5553605413382831"
-     crossorigin="anonymous"></script>
+    <meta name="description" content="인공지능(AI) 기반 얼굴 분석으로 알아보는 나의 동물상 테스트. 사진 한 장으로 강아지상, 고양이상, 공룡상 등 당신의 숨겨진 동물 매력을 찾아보세요.">
+    <meta name="keywords" content="동물상테스트, 인공지능얼굴테스트, 얼굴상테스트, 강아지상, 고양이상, AI테스트">
+    <meta property="og:title" content="프리미엄 AI 동물상 테스트">
+    <meta property="og:description" content="당신은 어떤 동물과 가장 닮았을까요? AI가 정확하게 분석해 드립니다.">
+    <meta property="og:type" content="website">
+    <title>프리미엄 AI 동물상 테스트</title>
+    
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Pretendard', sans-serif;
+        :root {
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary-purple: #6366f1;
+            --primary-hover: #4f46e5;
+            --border-light: #e2e8f0;
+            --shadow-soft: 0 10px 40px rgba(0, 0, 0, 0.04);
+            
+            --mesh-1: rgba(99, 102, 241, 0.15);
+            --mesh-2: rgba(236, 72, 153, 0.1);
+            --mesh-3: rgba(56, 189, 248, 0.15);
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', sans-serif; }
 
         body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            background-color: var(--bg-body);
+            color: var(--text-main);
             overflow-x: hidden;
-            padding: 60px 20px 20px;
-        }
-
-        /* 메인 네비게이션 탭 */
-        .main-nav {
-            position: fixed;
-            top: 20px;
-            display: flex;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            padding: 8px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            z-index: 100;
-        }
-
-        .nav-item {
-            padding: 10px 20px;
-            color: #94a3b8;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-item.active {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .nav-item:hover:not(.active) {
-            color: white;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .container {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 2.5rem;
-            width: 100%;
-            max-width: 600px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            text-align: center;
             display: flex;
             flex-direction: column;
-            max-height: 90vh;
-        }
-
-        h1 {
-            font-size: 2.2rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(to right, #60a5fa, #c084fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            flex-shrink: 0;
-        }
-
-        p.subtitle {
-            color: #94a3b8;
-            margin-bottom: 2rem;
-            font-size: 1.1rem;
-            flex-shrink: 0;
-        }
-
-        /* 업로드 영역 스타일 */
-        .upload-area {
-            margin: 0 auto 2rem;
-            width: 300px;
-            height: 300px;
-            border-radius: 24px;
-            background: rgba(0, 0, 0, 0.2);
-            border: 2px dashed rgba(255, 255, 255, 0.2);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .upload-area:hover, .upload-area.dragover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: #60a5fa;
-            transform: scale(1.02);
-        }
-
-        .upload-area.dragover {
-            border-style: solid;
-            box-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
-        }
-
-        .upload-icon {
-            font-size: 3rem;
-            margin-bottom: 10px;
-            transition: transform 0.3s ease;
-        }
-
-        .upload-area:hover .upload-icon {
-            transform: translateY(-5px);
-        }
-
-        .upload-text {
-            color: #94a3b8;
-            font-size: 0.9rem;
-            padding: 0 20px;
-        }
-
-        #image-preview {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: none;
-            border-radius: 20px;
-        }
-
-        #file-input {
-            display: none;
-        }
-
-        #label-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 1rem;
-            display: none; /* 초기에는 숨김 */
-        }
-
-        .prediction-bar {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .prediction-info {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
         }
 
-        .class-name {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #cbd5e1;
-        }
+        /* 공통 네비게이션 및 배경 */
+        .mesh-background { position: absolute; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; background-color: #ffffff; overflow: hidden; }
+        .mesh-background::before, .mesh-background::after, .mesh-blob { content: ''; position: absolute; border-radius: 50%; filter: blur(80px); }
+        .mesh-background::before { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--mesh-1); }
+        .mesh-background::after { bottom: 20%; right: -10%; width: 60vw; height: 60vw; background: var(--mesh-2); }
+        .mesh-blob { top: 30%; left: 40%; width: 40vw; height: 40vw; background: var(--mesh-3); }
 
-        .probability {
-            font-weight: 800;
-            color: #60a5fa;
-        }
+        .navbar { position: fixed; top: 0; width: 100%; height: 80px; display: flex; justify-content: space-between; align-items: center; padding: 0 5%; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.5); z-index: 1000; }
+        .nav-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .nav-logo::before { content: ''; display: inline-block; width: 24px; height: 24px; background: linear-gradient(135deg, var(--primary-purple), #a855f7); border-radius: 8px; }
+        .nav-links { display: flex; gap: 2.5rem; }
+        .nav-item { color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: color 0.3s ease; }
+        .nav-item:hover, .nav-item.active { color: var(--text-main); }
 
-        .progress-bg {
-            background: rgba(255, 255, 255, 0.05);
-            height: 12px;
-            border-radius: 6px;
-            overflow: hidden;
-        }
+        /* 메인 컨텐츠 */
+        .main-content { width: 100%; max-width: 1000px; padding: 0 20px; display: flex; flex-direction: column; align-items: center; margin-top: 120px; }
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(to right, #60a5fa, #c084fc);
-            width: 0%;
-            transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            border-radius: 6px;
-        }
+        .page-header { text-align: center; margin-bottom: 3rem; }
+        .page-header h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
+        .page-header p { font-size: 1.1rem; color: var(--text-muted); }
 
-        #loading {
-            display: none;
-            color: #60a5fa;
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
+        /* 드래그 앤 드롭 업로드 UI */
+        .upload-card { background: var(--bg-card); width: 100%; max-width: 600px; border-radius: 24px; box-shadow: var(--shadow-soft); padding: 3rem; text-align: center; border: 1px solid var(--border-light); margin-bottom: 4rem; }
+        
+        .drop-zone { width: 100%; height: 250px; border: 2px dashed #cbd5e1; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; background: #f8fafc; margin-bottom: 1.5rem; }
+        .drop-zone:hover, .drop-zone.dragover { border-color: var(--primary-purple); background: rgba(99, 102, 241, 0.05); }
+        .drop-zone svg { width: 48px; height: 48px; color: #94a3b8; margin-bottom: 1rem; }
+        .drop-zone p { color: var(--text-muted); font-weight: 500; font-size: 1.1rem; }
+        
+        .upload-btn { background: var(--primary-purple); color: white; border: none; padding: 14px 32px; border-radius: 9999px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3); }
+        .upload-btn:hover { background: var(--primary-hover); transform: translateY(-2px); }
 
-        /* Mobile Responsive */
-        @media (max-width: 480px) {
-            .container {
-                padding: 1.5rem;
-            }
+        /* 결과 화면 (초기 숨김) */
+        #result-section { display: none; width: 100%; max-width: 600px; animation: fadeIn 0.5s ease; }
+        .result-card { background: var(--bg-card); border-radius: 24px; box-shadow: var(--shadow-soft); padding: 3rem; margin-bottom: 4rem; border: 1px solid var(--border-light); text-align: center; }
+        .result-card h2 { font-size: 2rem; color: var(--primary-purple); margin-bottom: 0.5rem; }
+        .result-card .sub-text { color: var(--text-muted); margin-bottom: 2rem; }
+        
+        .progress-container { margin-top: 2rem; text-align: left; }
+        .progress-item { margin-bottom: 1.5rem; }
+        .progress-label { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-main); }
+        .progress-bar-bg { width: 100%; height: 12px; background: #e2e8f0; border-radius: 9999px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary-purple), #a855f7); border-radius: 9999px; transition: width 1s ease-in-out; }
 
-            h1 {
-                font-size: 1.8rem;
-            }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-            .upload-area {
-                width: 240px;
-                height: 240px;
-            }
-        }
+        /* 정보성 텍스트 (애드센스용) */
+        .info-section { width: 100%; background: var(--bg-card); border-radius: 24px; padding: 4rem 3rem; margin-bottom: 4rem; box-shadow: var(--shadow-soft); }
+        .info-section h2 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+        .info-section p { color: var(--text-muted); line-height: 1.8; margin-bottom: 1.5rem; font-size: 1.05rem; }
+        
+        .footer { width: 100%; background: #0f172a; color: white; padding: 4rem 5% 2rem; display: flex; flex-direction: column; align-items: center; }
+        .footer-grid { width: 100%; max-width: 1200px; display: flex; justify-content: space-between; margin-bottom: 3rem; }
+        .footer-col h4 { margin-bottom: 1rem; }
+        .footer-col a { color: #94a3b8; text-decoration: none; display: block; margin-bottom: 0.5rem; }
     </style>
 </head>
 
 <body>
-    <nav class="main-nav">
-        <a href="index.html" class="nav-item">로또 번호 생성</a>
-        <a href="animal.html" class="nav-item active">동물상 테스트</a>
-        <a href="blog.html" class="nav-item">블로그</a>
+    <div class="mesh-background"><div class="mesh-blob"></div></div>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">UtilityLab</a>
+        <div class="nav-links">
+            <a href="index.html" class="nav-item">로또 번호 분석</a>
+            <a href="animal.html" class="nav-item active">동물상 테스트</a>
+            <a href="blog.html" class="nav-item">블로그</a>
+        </div>
     </nav>
 
-    <div class="container">
-        <h1>AI 동물상 테스트</h1>
-        <p class="subtitle">나의 얼굴 사진을 올려 분석해 보세요!</p>
+    <main class="main-content">
+        <div class="page-header">
+            <h1>AI 동물상 테스트</h1>
+            <p>당신의 얼굴 사진을 올려주시면, 인공지능이 어떤 동물과 가장 닮았는지 분석해 드립니다.</p>
+        </div>
 
-        <div class="upload-area" id="upload-area" onclick="document.getElementById('file-input').click()">
-            <div id="upload-placeholder">
-                <div class="upload-icon">📸</div>
-                <div class="upload-text">사진을 클릭하거나 드래그하여 업로드하세요</div>
+        <div class="upload-card" id="upload-section">
+            <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                <p>여기로 이미지를 드래그하거나 클릭하여 업로드하세요</p>
+                <input type="file" id="file-input" style="display: none;" accept="image/*" onchange="handleFileSelect(event)">
             </div>
-            <img id="image-preview" alt="Preview">
-        </div>
-        <input type="file" id="file-input" accept="image/*" onchange="handleFileUpload(this.files)">
-
-        <div id="loading">AI가 분석 중입니다...</div>
-
-        <div id="label-container">
-            <!-- Results will be loaded here -->
+            <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 1.5rem;">※ 사진은 어디에도 저장되지 않으며, 분석 즉시 삭제됩니다.</p>
+            <button class="upload-btn" onclick="document.getElementById('file-input').click()">사진 선택하기</button>
         </div>
 
-        <a href="partnership.html"
-            style="margin-top: 1.5rem; color: #94a3b8; text-decoration: none; font-size: 0.85rem; transition: color 0.3s;"
-            onmouseover="this.style.color='white'" onmouseout="this.style.color='#94a3b8'">비즈니스 제휴 문의</a>
-    </div>
-
-    <!-- 고품질 콘텐츠 보강 영역 -->
-    <div style="max-width: 600px; width: 100%; margin-top: 3rem; color: #94a3b8; line-height: 1.8; text-align: left; padding-bottom: 5rem;">
-        <h3 style="color: white; margin-bottom: 1rem; font-size: 1.3rem;">AI 동물상 테스트 기술 가이드</h3>
-        <p style="margin-bottom: 1.5rem;">본 AI 동물상 테스트는 Google의 고성능 머신러닝 라이브러리인 TensorFlow.js와 Teachable Machine을 기반으로 제작되었습니다. 업로드된 사진에서 얼굴의 특징점을 추출하고, 수만 장의 강아지 및 고양이상 데이터를 학습한 신경망 모델이 이를 비교 분석하여 가장 유사한 동물상을 높은 정확도로 찾아냅니다.</p>
-        
-        <h3 style="color: white; margin-bottom: 1rem; font-size: 1.3rem;">강아지상 vs 고양이상 특징</h3>
-        <p style="margin-bottom: 1.5rem;">일반적으로 강아지상은 부드러운 눈매와 둥근 얼굴형, 친근한 인상이 특징이며, 고양이상은 날카롭고 매력적인 눈매와 뚜렷한 이목구비, 도도한 분위기를 자아냅니다. 본 테스트는 이러한 시각적 특징을 수치화하여 분석 결과를 제공하므로 친구들과 함께 재미로 즐기기에 최적화되어 있습니다.</p>
-        
-        <h3 style="color: white; margin-bottom: 1rem; font-size: 1.3rem;">데이터 보안 및 개인정보 보호</h3>
-        <p>본 테스트에 사용되는 이미지는 서버로 전송되거나 저장되지 않습니다. 모든 분석 과정은 사용자의 웹 브라우저 내에서 직접 수행되며, 페이지를 닫는 즉시 모든 데이터는 파기됩니다. 안심하고 나만의 동물상을 확인해 보세요.</p>
-    </div>
-
-    <footer style="width: 100%; padding: 30px; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: #64748b; font-size: 0.9rem;">
-        <div style="margin-bottom: 15px;">
-            <a href="about.html" style="color: #94a3b8; text-decoration: none; margin: 0 15px;">서비스 소개</a>
-            <a href="privacy.html" style="color: #94a3b8; text-decoration: none; margin: 0 15px;">개인정보처리방침</a>
-            <a href="partnership.html" style="color: #94a3b8; text-decoration: none; margin: 0 15px;">제휴 문의</a>
+        <div id="result-section">
+            <div class="result-card">
+                <h2>당신은 '귀여운 강아지상' 입니다!</h2>
+                <p class="sub-text">친근하고 다정다감한 인상을 주는 매력적인 얼굴입니다.</p>
+                
+                <div class="progress-container">
+                    <div class="progress-item">
+                        <div class="progress-label"><span>강아지상</span><span>78%</span></div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 78%;"></div></div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label"><span>고양이상</span><span>15%</span></div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 15%; background: #fb7185;"></div></div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label"><span>토끼상</span><span>7%</span></div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 7%; background: #38bdf8;"></div></div>
+                    </div>
+                </div>
+                
+                <button class="upload-btn" style="margin-top: 2rem; background: var(--bg-body); color: var(--text-main); box-shadow: none; border: 1px solid var(--border-light);" onclick="resetTest()">다시 테스트하기</button>
+            </div>
         </div>
-        <p>&copy; 2026 AI Animal Test Services. All rights reserved.</p>
+
+        <section class="info-section">
+            <h2>AI 기반 얼굴 인식 및 관상 분석의 원리</h2>
+            <p>본 페이지에서 제공하는 동물상 테스트는 수만 장의 유명인, 연예인 데이터베이스를 학습한 인공지능(AI) 딥러닝 모델을 활용하여 사용자의 이목구비 비율과 얼굴형을 분석합니다. 눈의 크기, 꼬리의 각도, 코와 입술의 비율 등 미세한 특징을 픽셀 단위로 스캔하여 기존에 학습된 동물의 특성과 대조하는 과정을 거칩니다.</p>
+            
+            <p>관상학적으로 동물의 형태미를 차용한 '동물상' 분류는 대중적으로 큰 인기를 얻고 있습니다. 대표적으로 둥글고 선한 인상의 강아지상, 날카롭고 도도한 매력의 고양이상, 이국적이고 시원시원한 공룡상 등이 있습니다. 이러한 재미있는 유희는 본인의 숨겨진 매력을 찾고 타인과의 대화에서 즐거운 아이스브레이킹(Ice-breaking) 소재로 활용하기에 안성맞춤입니다.</p>
+            
+            <p><strong>[개인정보 보호 안내]</strong> 사용자가 업로드한 이미지는 오직 브라우저 내에서 딥러닝 모델 분석 용도로만 임시로 사용되며, 어떠한 외부 서버로도 전송되거나 저장되지 않으니 안심하고 이용하셔도 좋습니다.</p>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3 style="margin-bottom: 1rem;">UtilityLab</h3>
+                <p style="color: #94a3b8; font-size: 0.95rem;">일상의 재미와 유용한 도구를 제공합니다.</p>
+            </div>
+            <div class="footer-col">
+                <h4>서비스</h4>
+                <a href="index.html">로또 번호 추천</a>
+                <a href="animal.html">동물상 테스트</a>
+                <a href="blog.html">공식 블로그</a>
+            </div>
+        </div>
+        <p style="color: #64748b; font-size: 0.85rem; margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; width: 100%; max-width: 1200px; text-align: center;">&copy; 2026 UtilityLab. All rights reserved.</p>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-    <script type="text/javascript">
-        const URL = "https://teachablemachine.withgoogle.com/models/Oeeq0njDl/";
-        const uploadArea = document.getElementById('upload-area');
-
-        let model, labelContainer, maxPredictions;
-
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        
         // 드래그 앤 드롭 이벤트 처리
-        uploadArea.addEventListener('dragover', (e) => {
+        dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
-            uploadArea.classList.add('dragover');
+            dropZone.classList.add('dragover');
         });
-
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
+        
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
         });
-
-        uploadArea.addEventListener('drop', (e) => {
+        
+        dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
-            uploadArea.classList.remove('dragover');
-            const files = e.dataTransfer.files;
-            handleFileUpload(files);
+            dropZone.classList.remove('dragover');
+            if(e.dataTransfer.files.length) showResult();
         });
 
-        // 모델 로드 함수
-        async function loadModel() {
-            if (!model) {
-                const modelURL = URL + "model.json";
-                const metadataURL = URL + "metadata.json";
-                model = await tmImage.load(modelURL, metadataURL);
-                maxPredictions = model.getTotalClasses();
-            }
+        // 파일 선택 시 결과 보여주기
+        function handleFileSelect(event) {
+            if(event.target.files.length) showResult();
         }
 
-        // 파일 업로드 핸들러
-        async function handleFileUpload(files) {
-            if (files && files[0]) {
-                const reader = new FileReader();
-
-                reader.onload = async function (e) {
-                    // 미리보기 설정
-                    const preview = document.getElementById('image-preview');
-                    const placeholder = document.getElementById('upload-placeholder');
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                    placeholder.style.display = 'none';
-
-                    // 결과창 초기화 및 로딩 표시
-                    document.getElementById('loading').style.display = 'block';
-                    document.getElementById('label-container').style.display = 'none';
-                    document.getElementById('label-container').innerHTML = '';
-
-                    // 모델 로드 및 예측
-                    await loadModel();
-                    await predict(preview);
-                };
-
-                reader.readAsDataURL(files[0]);
-            }
+        // 결과창 표시 함수 (Mock)
+        function showResult() {
+            document.getElementById('upload-section').style.display = 'none';
+            document.getElementById('result-section').style.display = 'block';
         }
 
-        async function predict(imageElement) {
-            const prediction = await model.predict(imageElement);
-            
-            labelContainer = document.getElementById("label-container");
-            labelContainer.style.display = 'flex';
-            document.getElementById('loading').style.display = 'none';
-
-            // 결과 정렬 (확률 높은 순)
-            prediction.sort((a, b) => b.probability - a.probability);
-
-            for (let i = 0; i < maxPredictions; i++) {
-                const className = prediction[i].className;
-                const probability = (prediction[i].probability * 100).toFixed(0);
-                
-                let displayName = className;
-                if(className === "dog") displayName = "강아지상";
-                if(className === "cat") displayName = "고양이상";
-
-                const bar = document.createElement("div");
-                bar.className = "prediction-bar";
-                bar.innerHTML = `
-                    <div class="prediction-info">
-                        <span class="class-name">${displayName}</span>
-                        <span class="probability">${probability}%</span>
-                    </div>
-                    <div class="progress-bg">
-                        <div class="progress-fill" style="width: ${probability}%"></div>
-                    </div>
-                `;
-                labelContainer.appendChild(bar);
-            }
+        // 테스트 초기화
+        function resetTest() {
+            document.getElementById('upload-section').style.display = 'block';
+            document.getElementById('result-section').style.display = 'none';
+            document.getElementById('file-input').value = ""; // 초기화
         }
     </script>
 </body>
-
 </html>
